@@ -4,6 +4,7 @@ import Layout from './sections/Layout';
 import DashboardSection from './sections/DashboardSection';
 import ScheduleSection from './sections/ScheduleSection';
 import NoPage from './sections/NoPage';
+import FacultySection from './sections/FacultySection';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<DashboardSection />} />
           <Route path="schedule" element={<ScheduleSection />} />
+          <Route path="faculty" element={<FacultySection />} />
           
         </Route>
         <Route path="*" element={<NoPage />} />

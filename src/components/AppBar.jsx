@@ -3,8 +3,9 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Typography from '@mui/material/Typography';
+import Avatar from '@mui/material/Avatar';
 
-export default function AppBar({AppBar1,open,handleDrawerOpen}) {
+export default function AppBar({ AppBar1, open, handleDrawerOpen }) {
   return (
     <>
       <AppBar1 position="fixed" open={open}>
@@ -21,8 +22,10 @@ export default function AppBar({AppBar1,open,handleDrawerOpen}) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
+          <Avatar alt="Remy Sharp" src="https://pict.edu/images/fav.png" style={{ backgroundColor: "#fff", width: "50px", height: "50px" }} />
+
+          <Typography variant="h6" noWrap component="div" style={{ marginLeft: "10px" }}>
+            Pune Institute of Computer Technology, Pune
           </Typography>
         </Toolbar>
       </AppBar1>
