@@ -4,8 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
-import Typography from '@mui/material/Typography';
-import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { Outlet} from 'react-router-dom';
 import AppBar from '../components/AppBar';
 import Sidebar from '../components/Sidebar';
 
