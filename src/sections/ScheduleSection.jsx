@@ -90,9 +90,7 @@ export default function ScheduleSection() {
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = (event,reason) => {
-    if (reason && reason === "backdropClick")
-        return;
+  const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
