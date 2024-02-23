@@ -5,6 +5,7 @@ import DashboardSection from './sections/DashboardSection';
 import ScheduleSection from './sections/ScheduleSection';
 import NoPage from './sections/NoPage';
 import FacultySection from './sections/FacultySection';
+import ScheduleForm from './forms/ScheduleForm';
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<DashboardSection />} />
           <Route path="schedule" element={<ScheduleSection />} />
+          <Route path="schedule/create" element={<ScheduleForm />} />
           <Route path="faculty" element={<FacultySection />} />
           
         </Route>

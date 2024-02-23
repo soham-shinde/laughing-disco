@@ -15,21 +15,21 @@ export default function EditFacultyForm({ closeEvent, formid }) {
   const [teachToSE, setTeachToSE] = useState(false);
   const [teachToTE, setTeachToTE] = useState(false);
   const [teachToBE, setTeachToBE] = useState(false);
-  
 
-  useEffect( () => {
+
+  useEffect(() => {
     //To set initial data to the form
     if (formid) {
-        console.log("Form ID:"+formid);
-        setName(formid.name || "");
-        setDesignation(formid.designation || "");
-        
-        setJoiningDate(formid.joining_date ? dayjs(formid.joining_date) : null);
-        setTeachToSE(formid.teachTo.includes("SE"));
-        setTeachToTE(formid.teachTo.includes("TE"));
-        setTeachToBE(formid.teachTo.includes("BE"));
-      }
-  },[formid])
+      console.log("Form ID:" + formid);
+      setName(formid.name || "");
+      setDesignation(formid.designation || "");
+
+      setJoiningDate(formid.joining_date ? dayjs(formid.joining_date) : null);
+      setTeachToSE(formid.teachTo.includes("SE"));
+      setTeachToTE(formid.teachTo.includes("TE"));
+      setTeachToBE(formid.teachTo.includes("BE"));
+    }
+  }, [formid])
   const handleNameChange = (event) => {
     setName(event.target.value)
   }
@@ -38,7 +38,7 @@ export default function EditFacultyForm({ closeEvent, formid }) {
   }
   const handleJoiningDateChange = (date) => {
     setJoiningDate(date);
-  
+
   }
 
   const handleTeachToSEChange = (event) => {
@@ -97,24 +97,24 @@ export default function EditFacultyForm({ closeEvent, formid }) {
         </Grid>
         <Grid item xs={12}>
 
-        
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker label="Joining Date *"
-                required
-                variant="filled"
-                fullWidth
-                value = {dayjs(joining_date)}
-                format='DD/MM/YYYY'
-                onChange={handleJoiningDateChange}
-                slotProps={{ textField: { fullWidth: true } }}
-                
-              />
 
-            </LocalizationProvider>
-          
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker label="Joining Date *"
+              required
+              variant="filled"
+              fullWidth
+              value={dayjs(joining_date)}
+              format='DD/MM/YYYY'
+              onChange={handleJoiningDateChange}
+              slotProps={{ textField: { fullWidth: true } }}
+
+            />
+
+          </LocalizationProvider>
+
         </Grid>
         <Grid item xs={12}>
-          <Grid style={{ padding: '16px 12px 8px', border:'1px solid #D3D3D3',borderRadius: 5  }}>
+          <Grid style={{ padding: '16px 12px 8px', border: '1px solid #D3D3D3', borderRadius: 5 }}>
             <Typography variant="subtitle1" color={'#606060'}>Teach To</Typography>
 
             <FormControlLabel

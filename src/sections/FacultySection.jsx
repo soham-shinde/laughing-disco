@@ -82,7 +82,7 @@ export default function FacultyList() {
   const [rows, setRows] = useState(teachers);
   const [open, setOpen] = useState(false);
   const [editopen, setEditOpen] = useState(false);
-  const [formid,setFormId] = useState("");
+  const [formid, setFormId] = useState("");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleEditOpen = () => setEditOpen(true);
@@ -123,18 +123,18 @@ export default function FacultyList() {
     Swal.fire("Deleted!", "Data has been deleted", "success");
     //fetch data again here
   }
-  
+
 
   const handleEditClick = (row) => {
     console.log(row);
     const data = {
-      id : row.id,
-      name : row.name,
+      id: row.id,
+      name: row.name,
       designation: row.designation,
       joining_date: new Date(row.joinDate),
-      teachTo : row.teachTo
+      teachTo: row.teachTo
     }
-    console.log("in faculty : "+data.joining_date)
+    console.log("in faculty : " + data.joining_date)
     setFormId(data);
     handleEditOpen();
   }
@@ -149,13 +149,7 @@ export default function FacultyList() {
       const filteredTeachers = teachers.filter(teacher => teacher.name.toLowerCase().includes(value.name.toLowerCase()));
       console.log("Filtered teachers:", filteredTeachers);
       setRows(filteredTeachers);
-    } 
-    else {
-
-      //setRows([]); make the rows empty first before fetching the data
-      //fetch data again here
     }
-
   }
 
   return (
@@ -166,10 +160,10 @@ export default function FacultyList() {
           // onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
-          
+
         >
           <Box sx={style}>
-            <AddFacultyForm closeEvent = {handleClose}/>
+            <AddFacultyForm closeEvent={handleClose} />
           </Box>
         </Modal>
 
@@ -178,18 +172,18 @@ export default function FacultyList() {
           // onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
-          
+
         >
           <Box sx={style}>
-            <EditFacultyForm closeEvent = {handleEditClose} formid = {formid}/>
+            <EditFacultyForm closeEvent={handleEditClose} formid={formid} />
           </Box>
         </Modal>
       </div>
 
 
 
-      <div style={{ marginTop: '1%', padding: '2%' }}>
-        <Stack direction="row" spacing={2} className="my-2 mb-2">
+      <div style={{ marginTop: '1%', padding: '1%' }}>
+        <Stack direction="row" spacing={2} justifyContent="space-between" className="my-2 mb-2">
           <Autocomplete
             disablePortal
             id="combo-box-demo"
@@ -202,20 +196,19 @@ export default function FacultyList() {
             )}
           >
           </Autocomplete>
-          <Typography
+          {/* <Typography
             variant="h6"
             component="div"
             sx={{ flexGrow: 1 }}
           >
-          </Typography>
+          </Typography>  */}
           <Button variant="outlined" endIcon={<AddCircleIcon />} onClick={handleOpen}>
             Add
           </Button>
         </Stack>
 
         <Box height={10} />
-        <Divider sx={{ marginBottom: "20px" }} />
-        <Box height={10} />
+        {/* <Box height={10} /> */}
 
         <StickyHeadTable columns={columns} rows={rows} handleDeleteClick={handleDeleteClick} handleEditClick={handleEditClick} />
 

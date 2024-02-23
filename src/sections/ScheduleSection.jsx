@@ -7,7 +7,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 // import ExportIcon from '@mui/icons-material/Export';
 import GetAppIcon from '@mui/icons-material/GetApp';
-import ScheduleForm from "../forms/ScheduleForm";
+import { useNavigate } from 'react-router-dom';
+
 
 const columns = [
   { id: 'id', label: 'Sr No.', minWidth: 100 },
@@ -73,6 +74,8 @@ export default function ScheduleSection() {
     console.log('Delete clicked:', row);
     // Add your delete logic here
   };
+  const navigate = useNavigate();
+
 
   const handleEditClick = (row) => {
     console.log('Edit clicked:', row);
@@ -80,18 +83,13 @@ export default function ScheduleSection() {
   };
 
   const handleExportClick = (row) => {
-    console.log('Export clicked:', row);
-    // Add your export logic here
+    console.log('Export clicked:', row)
+
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+     navigate("/schedule/create");
   };
 
   return (
@@ -104,7 +102,6 @@ export default function ScheduleSection() {
       <div>
         <StickyHeadTable columns={columns} rows={rows} handleDeleteClick={handleDeleteClick} handleEditClick={handleEditClick} handleExportClick={handleExportClick} />
       </div>
-      <ScheduleForm isOpen={isModalOpen} handleClose={handleCloseModal} />
     </div>
   );
 }

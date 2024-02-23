@@ -20,7 +20,7 @@ function getStepContent(step) {
     case 1:
       return <div><TeacherList/></div>;
     case 2:
-      return <div>Step 3</div>;i
+      return <div>Step 3</div>;
     default:
       throw new Error("Unknown step");
   }
@@ -47,13 +47,9 @@ export default function ScheduleForm({ isOpen, handleClose }) {
   
   return (
     <>
-      <Modal
-        open={isOpen}
-        onClose={handleCloseE}
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-      >
-        <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
-          <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } ,maxHeight:"600px", overflow:"auto"}}>
+     
+        <Container component="main" sx={{ mb: 1 }}>
+          <Paper variant="normal" sx={{ p: { xs: 2, md: 1 } }}>
             <Typography component="h1" variant="h4" align="center">
               Create new Schedule
             </Typography>
@@ -86,7 +82,6 @@ export default function ScheduleForm({ isOpen, handleClose }) {
               </React.Fragment>
           </Paper>
         </Container>
-      </Modal>
     </>
   );
 }
