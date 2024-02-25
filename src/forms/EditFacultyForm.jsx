@@ -5,9 +5,8 @@ import { Close as CloseIcon } from '@mui/icons-material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
-export default function EditFacultyForm({ closeEvent, formid }) {
+export default function EditFacultyForm({ onClose, formid, onSuccess, onError }) {
 
   const [name, setName] = useState("");
   const [designation, setDesignation] = useState("");
@@ -54,10 +53,18 @@ export default function EditFacultyForm({ closeEvent, formid }) {
   }
 
   const EditFaculty = () => {
-    //logic to edit faculty here
-    //fetch data again
-    closeEvent(); //close the form
-    Swal.fire("Submitted!", "Data Edited", "success")
+    try {
+      // Perform your edit logic here...
+
+      // Show success modal if edit is successful
+      onSuccess();
+    } catch (error) {
+      console.error('Error adding faculty:', error);
+      onError();
+    } finally {
+      onClose(); // Close the form modal
+
+    }
   }
   return (
     <>
@@ -65,7 +72,7 @@ export default function EditFacultyForm({ closeEvent, formid }) {
       <Typography variant='h6' align='center'>Edit Faculty</Typography>
       <IconButton
         style={{ position: "absolute", top: "0", right: "0" }}
-        onClick={closeEvent}
+        onClick={onClose}
       >
         <CloseIcon />
       </IconButton>
