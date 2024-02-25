@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { useState, useEffect } from "react";
 import StickyHeadTable from "../components/TableComponent.jsx";
@@ -284,3 +285,4 @@ export default function FacultySection() {
     </div>
   );
 }
+
