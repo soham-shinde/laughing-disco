@@ -1,129 +1,139 @@
-import * as React from 'react';
-import { useState } from 'react';
+import * as React from "react";
+import { useState, useEffect } from "react";
 import StickyHeadTable from "../components/TableComponent.jsx";
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import IconButton from '@mui/material/IconButton';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import Divider from '@mui/material/Divider';
-import Swal from 'sweetalert2';
-import { Autocomplete, Box, TextField, Button, Stack } from '@mui/material';
-import Typography from "@mui/material/Typography";
-import teachers from './FacultyData/facultydata.js';
-import Modal from '@mui/material/Modal';
-import AddFacultyForm from '../forms/AddFacultyForm.jsx';
-import EditFacultyForm from '../forms/EditFacultyForm.jsx';
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import IconButton from "@mui/material/IconButton";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+
+import { Autocomplete, Box, TextField, Button, Stack } from "@mui/material";
+
+import { getTeacherList } from "../api/data-service.js";
+
+import Modal from "@mui/material/Modal";
+import AddFacultyForm from "../forms/AddFacultyForm.jsx";
+import EditFacultyForm from "../forms/EditFacultyForm.jsx";
+import ConfirmMessageModal from "../components/ConfirmMessageModal.jsx";
+import FeedbackMessageModal from "../components/FeedbackMessageModal.jsx";
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
   boxShadow: 24,
+  borderRadius: 2,
   p: 4,
 };
 
-
 const columns = [
-  { id: 'sno', label: 'Sr. No.', minWidth: 170 },
-  { id: 'name', label: 'Name', minWidth: 100 },
+  { id: "sno", label: "Sr. No.", minWidth: 170 },
+  { id: "name", label: "Name", minWidth: 100 },
   {
-    id: 'designation',
-    label: 'Designation',
+    id: "designation",
+    label: "Designation",
     minWidth: 170,
-    align: 'left',
-    format: (value) => value.toLocaleString('en-US'),
+    align: "left",
+    format: (value) => (value ? value.toLocaleString("en-US") : ""),
   },
   {
-    id: 'joinDate',
-    label: 'Joining Date',
+    id: "joinDate",
+    label: "Joining Date",
     minWidth: 170,
-    align: 'left',
-    format: (value) => value.toLocaleString('en-US'),
+    align: "left",
+    format: (value) => (value ? value.toLocaleString("en-US") : ""),
   },
   {
-    id: 'teachTo',
-    label: 'Teach To',
+    id: "teachTo",
+    label: "Teach To",
     minWidth: 170,
-    align: 'left',
-    format: (value) => value.toLocaleString('en-US'),
+    align: "left",
+    format: (value) => (value ? value.toLocaleString("en-US") : ""),
   },
   {
-    id: 'actions',
-    label: 'Actions',
+    id: "actions",
+    label: "Actions",
     minWidth: 170,
-    align: 'center',
+    align: "center",
     format: (value, row, onDeleteClick, onEditClick) => (
       <div>
-        <IconButton onClick={(e) => {
-          e.stopPropagation();
-          onDeleteClick(row)
-        }} title="Delete">
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            onDeleteClick(row);
+          }}
+          title="Delete"
+        >
           <DeleteIcon color="error" />
         </IconButton>
-        <IconButton onClick={(e) => {
-          e.stopPropagation(); onEditClick(row)
-        }} title="Edit">
-          <EditIcon style={{ color: '#2DB532' }} />
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            onEditClick(row);
+          }}
+          title="Edit"
+        >
+          <EditIcon style={{ color: "#2DB532" }} />
         </IconButton>
       </div>
     ),
-
   },
 ];
 
+export default function FacultySection() {
+  const [teachers, setTeachers] = useState([]);
+  const [rows, setRows] = useState([]);
 
-
-export default function FacultyList() {
-
-  const [rows, setRows] = useState(teachers);
-  const [open, setOpen] = useState(false);
+  const [addopen, setAddOpen] = useState(false);
   const [editopen, setEditOpen] = useState(false);
+  const [deleteopen, setDeleteOpen] = useState(false);
   const [formid, setFormId] = useState("");
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [feedbackMainMessage, setFeedbackMainMessage] = useState("");
+  const [feedbackDetailMessage, setFeedbackDetailMessage] = useState("");
+  const [feedbackType, setFeedbackType] = useState("");
+
+  useEffect(() => {
+    const teacherList = getTeacherList();
+    setTeachers(teacherList);
+    setRows(teacherList);
+  }, []);
+
+  const handleAddOpen = () => setAddOpen(true);
+  const handleAddClose = () => setAddOpen(false);
   const handleEditOpen = () => setEditOpen(true);
   const handleEditClose = () => setEditOpen(false);
+  const handleDeleteClose = () => setDeleteOpen(false);
+  const handleDeleteOpen = () => setDeleteOpen(true);
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  const handleFeedbackClose = () => setFeedbackOpen(false);
 
-  // const fetchData = async () => {
-  //   try {
-  //     const response = await fetch('/api/faculty');
-  //     if (!response.ok) {
-  //       throw new Error('Failed to fetch data');
-  //     }
-  //     const data = await response.json();
-  //     setRows(data);
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   }
-  // };
   const handleDeleteClick = (row) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.value) {
-        deleteApi(row);
-      }
-    })
-  }
+    setFormId(row);
+    handleDeleteOpen();
+  };
 
-  const deleteApi = async (row) => {
-    //delete data request here
-    Swal.fire("Deleted!", "Data has been deleted", "success");
-    //fetch data again here
-  }
+  const handleDeleteConfirm = async (row) => {
+    try {
+      // Perform your deletion logic here...
 
+      // Show Feedback modal if deletion is successfull
+      setFeedbackMainMessage("Deleted!");
+      setFeedbackDetailMessage("Data has been deleted successfully");
+      setFeedbackType("success");
+      setFeedbackOpen(true);
+    } catch (error) {
+      console.error("Error deleting data:", error);
+      setFeedbackMainMessage("Error!");
+      setFeedbackDetailMessage("An error occurred during deletion");
+      setFeedbackType("error");
+      setFeedbackOpen(true);
+    } finally {
+      handleDeleteClose();
+    }
+  };
 
   const handleEditClick = (row) => {
     console.log(row);
@@ -132,58 +142,116 @@ export default function FacultyList() {
       name: row.name,
       designation: row.designation,
       joining_date: new Date(row.joinDate),
-      teachTo: row.teachTo
-    }
-    console.log("in faculty : " + data.joining_date)
+      teachTo: row.teachTo,
+    };
+   
     setFormId(data);
     handleEditOpen();
-  }
+  };
 
   const handleSearchClick = (value) => {
-    console.log("Search value:", value);
+    
     if (!value) {
       setRows(teachers);
       return;
     }
-    if (value && typeof value === 'object') {
-      const filteredTeachers = teachers.filter(teacher => teacher.name.toLowerCase().includes(value.name.toLowerCase()));
+    if (typeof value === "object") {
+      const filteredTeachers = teachers.filter((teacher) =>
+        teacher.name.toLowerCase().includes(value.name.toLowerCase())
+      );
       console.log("Filtered teachers:", filteredTeachers);
       setRows(filteredTeachers);
     }
-  }
+  };
 
   return (
     <div>
       <div>
         <Modal
-          open={open}
-          // onClose={handleClose}
+          open={addopen}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
-
         >
           <Box sx={style}>
-            <AddFacultyForm closeEvent={handleClose} />
+            <AddFacultyForm
+              onClose={handleAddClose}
+              onSuccess={() => {
+                setFeedbackMainMessage("Added!");
+                setFeedbackDetailMessage("Data has been added successfully");
+                setFeedbackType("success");
+                setFeedbackOpen(true);
+              }}
+              onError={() => {
+                setFeedbackMainMessage("Error!");
+                setFeedbackDetailMessage("An error occurred during editing");
+                setFeedbackType("error");
+                setFeedbackOpen(true);
+              }}
+            />
           </Box>
         </Modal>
 
         <Modal
           open={editopen}
-          // onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
-
         >
           <Box sx={style}>
-            <EditFacultyForm closeEvent={handleEditClose} formid={formid} />
+            <EditFacultyForm
+              onClose={handleEditClose}
+              formid={formid}
+              onSuccess={() => {
+                setFeedbackMainMessage("Edited!");
+                setFeedbackDetailMessage("Data has been edited successfully");
+                setFeedbackType("success");
+                setFeedbackOpen(true);
+              }}
+              onError={() => {
+                setFeedbackMainMessage("Error!");
+                setFeedbackDetailMessage("An error occurred during editing");
+                setFeedbackType("error");
+                setFeedbackOpen(true);
+              }}
+            />
+          </Box>
+        </Modal>
+
+        <Modal
+          open={deleteopen}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <ConfirmMessageModal
+              onClose={handleDeleteClose}
+              onDeleteConfirm={handleDeleteConfirm}
+            />
+          </Box>
+        </Modal>
+
+        <Modal
+          open={feedbackOpen}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <FeedbackMessageModal
+              onClose={handleFeedbackClose}
+              mainMessage={feedbackMainMessage}
+              detailMessage={feedbackDetailMessage}
+              feedbackType={feedbackType}
+            />
           </Box>
         </Modal>
       </div>
 
-
-
-      <div style={{ marginTop: '1%', padding: '1%' }}>
-        <Stack direction="row" spacing={2} justifyContent="space-between" className="my-2 mb-2">
+      <div style={{ marginTop: "1%", padding: "1%" }}>
+        <Stack
+          direction="row"
+          spacing={2}
+          justifyContent="space-between"
+          className="my-2 mb-2"
+        >
           <Autocomplete
             disablePortal
             id="combo-box-demo"
@@ -192,27 +260,27 @@ export default function FacultyList() {
             onChange={(e, v) => handleSearchClick(v)}
             getOptionLabel={(rows) => rows.name || ""}
             renderInput={(params) => (
-              <TextField {...params} size='small' label="Search" />
+              <TextField {...params} size="small" label="Search" />
             )}
+          ></Autocomplete>
+          <Button
+            variant="outlined"
+            endIcon={<AddCircleIcon />}
+            onClick={handleAddOpen}
           >
-          </Autocomplete>
-          {/* <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1 }}
-          >
-          </Typography>  */}
-          <Button variant="outlined" endIcon={<AddCircleIcon />} onClick={handleOpen}>
             Add
           </Button>
         </Stack>
 
         <Box height={10} />
-        {/* <Box height={10} /> */}
 
-        <StickyHeadTable columns={columns} rows={rows} handleDeleteClick={handleDeleteClick} handleEditClick={handleEditClick} />
-
-      </div >
+        <StickyHeadTable
+          columns={columns}
+          rows={rows}
+          handleDeleteClick={handleDeleteClick}
+          handleEditClick={handleEditClick}
+        />
+      </div>
     </div>
   );
 }
