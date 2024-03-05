@@ -59,7 +59,7 @@ const MatrixStructure = ({ activeStep,
               </TableCell>
             ))}
         </TableRow>
-        <TableRow>
+        {formData.paperSlotsPerDay > 1 &&<TableRow>
           <TableCell width={150}></TableCell>
           {[...Array(noOfBlocks).keys()].map((index) => (
               <TableCell key={index} width={70}>
@@ -68,6 +68,19 @@ const MatrixStructure = ({ activeStep,
                   variant="outlined"
                   size="small"
                   defaultValue={"Block "+((index)%formData.paperSlotsPerDay+1)}
+                />
+              </TableCell>
+            ))}
+        </TableRow>}
+        <TableRow>
+          <TableCell width={150}></TableCell>
+          {[...Array(noOfBlocks).keys()].map((index) => (
+              <TableCell key={index} width={70}>
+                <TextField
+                  fullWidth 
+                  variant="outlined"
+                  size="small"
+                  defaultValue={"Subject "+((index)+1)}
                 />
               </TableCell>
             ))}

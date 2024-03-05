@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
-
+import icon from '../assets/pict-icon.png';
 export default function AppBar({ AppBar1, open, handleDrawerOpen }) {
   return (
     <>
@@ -22,7 +22,7 @@ export default function AppBar({ AppBar1, open, handleDrawerOpen }) {
           >
             <MenuIcon />
           </IconButton>
-          <Avatar alt="Remy Sharp" src="https://pict.edu/images/fav.png" style={{ backgroundColor: "#fff", width: "50px", height: "50px" }} />
+          <Avatar alt="Remy Sharp" src={icon} style={{ backgroundColor: "#fff", width: "50px", height: "50px" }} />
 
           <Typography variant="h6" noWrap component="div" style={{ marginLeft: "10px" }}>
             Pune Institute of Computer Technology, Pune
