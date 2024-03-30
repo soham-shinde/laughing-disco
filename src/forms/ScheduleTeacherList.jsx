@@ -32,7 +32,7 @@ export default function ScheduleTeacherList({ activeStep,
     }));
     
     setTeachers(teachersWithSelection);}
-  }, []);
+  }, [setTeachers, teachers.length]);
 
   const handleToggle = (sno) => {
     setTeachers((prevTeachers) =>

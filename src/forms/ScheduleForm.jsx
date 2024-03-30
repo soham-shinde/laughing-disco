@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Stepper from "@mui/material/Stepper";
@@ -11,7 +9,6 @@ import ScheduleInfoForm from "./ScheduleInfoForm";
 import { useNavigate } from "react-router-dom";
 import ScheduleTeacherList from "./ScheduleTeacherList";
 import ScheduleReviewSection from "./ScheduleReviewSection";
-import MatrixStructure from "../Raw";
 
 const steps = ["Enter Basic Details", "Select Teacher", "Review"];
 
@@ -52,7 +49,7 @@ function getStepContent(
       );
     case 2:
       return (
-        <MatrixStructure
+        <ScheduleReviewSection
           activeStep={activeStep}
           handleNext={handleNext}
           handleBack={handleBack}
@@ -75,8 +72,8 @@ export default function ScheduleForm({ isOpen }) {
     selectedYears: [],
     subjectsPerYear: {},
     paperSlotsPerDay: "",
-    paperTimeSlots: [],
-    noOfBlocks: "",
+    paperTimeSlots: [], 
+    noOfBlocksPerYear:[],
   });
   const [teacherList, setTeacherList] = useState([]);
 

@@ -7,17 +7,21 @@ import {
   Checkbox,
   FormLabel,
   Button,
-  Box
+  Box,
 } from "@mui/material";
 
-export default function ScheduleInfoForm({ activeStep,
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
+export default function ScheduleInfoForm({
+  activeStep,
   handleNext,
   handleBack,
   handleClose,
   formData,
   setFormData,
-  steps }) {
-
+  steps,
+}) {
   const handleYearSelect = (event) => {
     const { value, checked } = event.target;
     let selectedYears = [...formData.selectedYears];
@@ -57,6 +61,19 @@ export default function ScheduleInfoForm({ activeStep,
     }
   };
 
+  const handleBlockChange = (event, year) => {
+    const { value } = event.target;
+    if (!isNaN(value)) {
+      setFormData({
+        ...formData,
+        noOfBlocksPerYear: {
+          ...formData.noOfBlocksPerYear,
+          [year]: value,
+        },
+      });
+    }
+  };
+
   const handlePaperSlotsChange = (event) => {
     const { value } = event.target;
     const paperTimeSlots = Array.from(
@@ -68,13 +85,6 @@ export default function ScheduleInfoForm({ activeStep,
     }
   };
 
-  const handleNoOfBlocks = (event) => {
-    const { value } = event.target;
-    if (!isNaN(value)) {
-      setFormData({ ...formData, noOfBlocks: value });
-    }
-  };
-  
   const handleTimeSlotChange = (event, index) => {
     const { name, value } = event.target;
     const updatedTimeSlots = [...formData.paperTimeSlots];
@@ -82,14 +92,9 @@ export default function ScheduleInfoForm({ activeStep,
     setFormData({ ...formData, paperTimeSlots: updatedTimeSlots });
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(formData.paperTimeSlots[0]['endTime']);
-    console.log(formData);
-  };
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form>
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <Typography variant="h6">Form</Typography>
@@ -146,6 +151,22 @@ export default function ScheduleInfoForm({ activeStep,
             </Grid>
           ))}
         </Grid>
+
+        <Grid container spacing={1} sx={{ my: 1 }}>
+          {formData.selectedYears.map((year) => (
+            <Grid item xs={3} key={year}>
+              <FormLabel required>{`Blocks for ${year}`}</FormLabel>
+              <TextField
+                fullWidth
+                type="text"
+                variant="outlined"
+                size="small"
+                value={formData.noOfBlocksPerYear[year]}
+                onChange={(e) => handleBlockChange(e, year)}
+              />
+            </Grid>
+          ))}
+        </Grid>
         <Grid container spacing={1}>
           <Grid item xs={3}>
             <FormLabel required>Paper Slots Per Day</FormLabel>
@@ -159,38 +180,28 @@ export default function ScheduleInfoForm({ activeStep,
               onChange={handlePaperSlotsChange}
             />
           </Grid>
-          <Grid item xs={3}>
-            <FormLabel required>No. Of Blocks</FormLabel>
-            <TextField
-              fullWidth
-              type="text"
-              name="paperSlotsPerDay"
-              variant="outlined"
-              size="small"
-              value={formData.noOfBlocks} 
-              onChange={handleNoOfBlocks}
-            />
-          </Grid>
         </Grid>
 
         <Grid container spacing={1} sx={{ my: 1 }}>
-          {formData.paperTimeSlots.map((timeSlot,index) => (
+          {formData.paperTimeSlots.map((timeSlot, index) => (
             <Grid item container xs={6} key={index} spacing={1}>
               <Grid item xs={10} textAlign={"start"}>
                 <Typography required>Time Slot {index + 1}</Typography>
               </Grid>
 
               <Grid item xs={5}>
-                <FormLabel required>Start</FormLabel>
-                <TextField
-                  fullWidth
-                  type="time"
-                  variant="outlined"
-                  size="small"
-                  name={`startTime`}
-                  value={formData.paperTimeSlots[index].startTime}
-                  onChange={(e) => handleTimeSlotChange(e, index)}
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <FormLabel required>Start</FormLabel>
+                  <TextField
+                    fullWidth
+                    type="time"
+                    variant="outlined"
+                    size="small"
+                    name={`startTime`}
+                    value={formData.paperTimeSlots[index].startTime}
+                    onChange={(e) => handleTimeSlotChange(e, index)}
+                  />
+                </LocalizationProvider>
               </Grid>
 
               <Grid item xs={5}>
@@ -207,7 +218,6 @@ export default function ScheduleInfoForm({ activeStep,
               </Grid>
             </Grid>
           ))}
-          <Button type="submit">adsf</Button>
         </Grid>
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           {activeStep !== 0 && (

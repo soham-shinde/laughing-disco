@@ -1,15 +1,12 @@
-import React from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './sections/Layout';
 import DashboardSection from './sections/DashboardSection';
 import ScheduleSection from './sections/ScheduleSection';
-import NoPage from './sections/NoPage';
-import FacultySection from './sections/FacultySection';
 import ScheduleForm from './forms/ScheduleForm';
-
+import FacultySection from './sections/FacultySection';
+import NoPage from './sections/NoPage';
 
 function App() {
- 
   return (
     <BrowserRouter>
       <Routes>
@@ -18,7 +15,7 @@ function App() {
           <Route path="schedule" element={<ScheduleSection />} />
           <Route path="schedule/create" element={<ScheduleForm />} />
           <Route path="faculty" element={<FacultySection />} />
-          
+
         </Route>
         <Route path="*" element={<NoPage />} />
       </Routes>
