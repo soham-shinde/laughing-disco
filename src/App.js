@@ -5,9 +5,6 @@ import ScheduleSection from './sections/ScheduleSection';
 import ScheduleForm from './forms/ScheduleForm';
 import FacultySection from './sections/FacultySection';
 import NoPage from './sections/NoPage';
-import PDFGenerator from './Raw';
-import BasicDocument from './Raw';
-import MyDocument from './Raw';
 
 function App() {
   return (
@@ -18,7 +15,6 @@ function App() {
           <Route path="schedule" element={<ScheduleSection />} />
           <Route path="schedule/create" element={<ScheduleForm />} />
           <Route path="faculty" element={<FacultySection />} />
-          <Route path="raw" element={<MyDocument />} />
 
         </Route>
         <Route path="*" element={<NoPage />} />
