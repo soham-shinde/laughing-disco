@@ -2,13 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
     Paper,
     TextField,
-    TableContainer,
-    Checkbox,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
     Box,
     Button,
     Typography, Grid
@@ -16,6 +9,7 @@ import {
 import { sendBasicInfo } from "../api/schedule.api";
 import { fetchAllTeachers } from "../api/teacher.api";
 import html2pdf from "html2pdf.js";
+import YearSchedule from "../components/YearSchedule";
 
 export default function ScheduleReviewSection({
     activeStep,
@@ -259,114 +253,7 @@ export default function ScheduleReviewSection({
             </Paper>
             {teacherNames&&yearSchedule &&
                 yearSchedule.map((year, yearIndex) => (
-                    <>
-                        <Typography variant="h5" sx={{ textAlign: "center" }}>
-                            Year : {formData.selectedYears[yearIndex]}{" "}
-                        </Typography>
-                        <TableContainer component={Paper} sx={{ m: 2 }}>
-                            <Table sx={{ minWidth: 650 }} aria-label="simple table"  id="schedule-table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell align="center"></TableCell>
-                                        {year.headers.days.map((index, i) => (
-                                            <TableCell
-                                                key={index}
-                                                align="center"
-                                                colSpan={ Math.ceil(Math.ceil(formData.noOfBlocksPerYear[formData.selectedYears[yearIndex]])*formData.paperSlotsPerDay) }
-                                                width={50}
-                                                sx={{ minWidth: "100px !important", width: "300px !important", }}
-                                            >
-                                                <TextField
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    size="small"
-                                                    defaultValue={index}
-                                                    value={index}
-                                                    onChange={(e) => { handleInputChange(e, yearIndex, "days", i) }}
-                                                />
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell width={150}></TableCell>
-
-                                        {year.headers.subjects.map((index, i) => (
-                                            <TableCell key={index} width={70} sx={{ minWidth: "100px !important", width: "300px !important", }} colSpan={Math.ceil(formData.noOfBlocksPerYear[formData.selectedYears[yearIndex]])}>
-                                                <TextField
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    size="small"
-                                                    value={index}
-                                                    onChange={(e) => { handleInputChange(e, yearIndex, "subjects", i) }}
-                                                />
-                                            </TableCell>
-                                        ))}
-
-
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell width={150}></TableCell>
-                                        {year.headers.blocks.map(
-                                            (index, i) => (
-                                                <TableCell key={i} sx={{ minWidth: "112px !important", width: "150px !important", }} >
-                                                    <TextField
-                                                        fullWidth
-                                                        variant="outlined"
-                                                        size="small"
-                                                        value={index}
-                                                        onChange={(e) => { handleInputChange(e, yearIndex, "blocks", i) }}
-                                                    />
-                                                </TableCell>
-                                            )
-                                        )}
-                                    </TableRow>
-
-
-                                </TableHead>
-                                <TableBody>
-                                    {Object.keys(year.schedule).map((teacherIndex) => (
-                                        <TableRow
-                                            key={teacherIndex}
-
-                                        >
-                                            <TableCell sx={{ minWidth: "300px !important", width: "300px !important", }} >
-                                                <TextField
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    size="small"
-                                                    disabled
-                                                    defaultValue={teacherNames.find(teacher => teacher.teacherId == teacherIndex).name
-                                                        
-                                                    }
-                                                    sx={{   
-                                                        "& .MuiOutlinedInput-input": {
-                                                            fontSize: "14px !important"
-                                                        }
-                                                    }}
-                                                />
-                                            </TableCell>
-                                            {year.schedule[teacherIndex].map((isAvailable, index) => (
-                                                <TableCell key={index} align="center">
-                                                    <Checkbox
-                                                        checked={isAvailable}
-                                                        onChange={(e) =>
-                                                            handleInputChange1(
-                                                                e,
-                                                                year,
-                                                                yearIndex,
-                                                                teacherIndex,
-                                                                index
-                                                            )
-                                                        }
-                                                    />
-                                                </TableCell>
-                                            ))}
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </>
+                    <YearSchedule year={year} yearIndex={yearIndex} teacherData={teacherNames} formData={formData} handleInputChange={handleInputChange} handleInputChange1={handleInputChange1}/>
                 ))}
 
             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
