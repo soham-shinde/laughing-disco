@@ -383,14 +383,7 @@ export default function ScheduleReviewSection({
                 >
                     Close
                 </Button>
-                <Button
-                    onClick={() => {
-                        generatePdf();
-                    }}
-                    sx={{ mt: 3, ml: 1 }}
-                >
-                    Close
-                </Button>
+                
                
 
                 {activeStep !== steps && (
