@@ -86,7 +86,7 @@ async function sendBasicInfo(data) {
 
 //   createNewTeacher({
 //     teacherId: 43,
-//     name: 'JAshutosh Patil',
+//     name: 'AMRUTA ABHINANDAN PATIL',
 //     designation: 'ASSIT.PROFESSOR',
 //     teachTo: [ 'BE' ],
 //     joiningData:"22-12-2024"

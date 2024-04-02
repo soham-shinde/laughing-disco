@@ -6,6 +6,7 @@ const url = process.env.REACT_APP_API_URL;
 export async function fetchAllTeachers() {
   try {
     const response = await axios.get(`${url}/teachers/`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error:", error);

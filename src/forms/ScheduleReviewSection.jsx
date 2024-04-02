@@ -11,12 +11,10 @@ import {
     TableBody,
     Box,
     Button,
-    Typography,
+    Typography, Grid
 } from "@mui/material";
 import { sendBasicInfo } from "../api/schedule.api";
 import { fetchAllTeachers } from "../api/teacher.api";
-
-// const teachers = ["Teacher 1", "Teacher 2", "Teacher 3", "Teacher 4", "Teacher 5"];
 
 export default function ScheduleReviewSection({
     activeStep,
@@ -27,17 +25,9 @@ export default function ScheduleReviewSection({
     formData,
     selectedTeachers,
 }) {
-    const noOfDays = Math.max(...Object.values(formData.subjectsPerYear));
-    const teachers = selectedTeachers.filter((teacher) => teacher.selected);
-
     const [yearSchedule, setYearSchedule] = useState();
-    const [teacherData, setTeacherData] = useState(
-        Array(teachers.length)
-            .fill()
-            .map(() => Array(noOfDays).fill(""))
-    );
-
     const [teacherNames, setTeacherNames] = useState({});
+
 
     useEffect(() => {
         const newData = sendBasicInfo(formData);
@@ -46,10 +36,26 @@ export default function ScheduleReviewSection({
             let year = [];
             if (data) {
                 console.log(data);
-                formData.selectedYears.map((d) => year.push(data[d]));
+                formData.selectedYears.map((d, index) => {
+                    console.log(formData.subjectsPerYear[d]);
+                    data[d].headers = {
+                        days: [
+                            ...Array(
+                                Math.ceil(formData.subjectsPerYear[d] / formData.paperSlotsPerDay)
+                            ).keys()
+                        ].map((k) => `Day ${k + 1}`),
+                        subjects: [
+                            ...Array(Math.ceil(formData.subjectsPerYear[d])).keys()
+                        ].map((k) => `Subject ${k + 1}`),
+                        blocks: [...Array(Math.ceil(data[d].totalSlots)).keys()].map(
+                            (k) => `Block ${(k % formData.paperSlotsPerDay) + 1}`
+                        ),
+                    };
+                    console.log(data[d]);
+                    return year.push(data[d]);
+                });
                 setYearSchedule(year);
-            }
-            else {
+            } else {
                 alert(`Error`);
             }
         });
@@ -58,104 +64,230 @@ export default function ScheduleReviewSection({
         });
     }, [formData]);
 
-    const handleInputChange = (e, rowIndex, colIndex) => {
-        const newData = [...teacherData];
-        console.log(newData);
-        newData[rowIndex][colIndex] = e.target.checked;
-        setTeacherData(newData);
+    const handleInputChange = (e, yearIndex, field, index) => {
+        const oldData = [...yearSchedule];
+        oldData[yearIndex].headers[field][index] = e.target.value;
+        setYearSchedule(oldData);
+        console.log(yearSchedule);
+
+
+    };
+    const handleInputChange1 = (e,year,yearIndex,teacherIndex,index) => {
+
+        const oldData = [...yearSchedule];
+        oldData[yearIndex].schedule[teacherIndex][index] = e.target.checked;
+        setYearSchedule(oldData);
+        console.log(yearSchedule);
+
     };
 
+ 
     return (
         <div>
-            <Typography variant="h5">Review Details</Typography>
-            <Typography variant="body1">Title: {formData.title}</Typography>
-            <Typography variant="body1">
-                Selected Years: {formData.selectedYears.join(", ")}
-            </Typography>
-            {Object.entries(formData.subjectsPerYear).map(([year, subjects]) => (
-                <Typography key={year} variant="body1">
-                    Subjects for {year}: {subjects}
+            <Paper sx={{ p: 2, mb: 3 }} elevation={2}>
+                <Typography variant="h5" m={2} align="center">
+                    Review Details
                 </Typography>
-            ))}
-            <Typography variant="body1">
-                Paper Slots Per Day: {formData.paperSlotsPerDay}
-            </Typography>
-            {formData.paperTimeSlots.map((timeSlot, index) => (
-                <Typography key={index} variant="body1">
-                    Time Slot {index + 1}: {timeSlot.startTime}
-                </Typography>
-            ))}
-            {yearSchedule &&
-                yearSchedule.map((year, index) => (
+
+                <Grid container spacing={1} sx={{ alignItems: "center" }}>
+                    <Grid item xs={2}>
+                        <Typography sx={{ fontSize: 19 }}>Title: </Typography>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <TextField
+                            size="small"
+                            defaultValue={formData.title}
+                            disabled
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={6}></Grid>
+                    <Grid item xs={12}>
+                        <Grid container spacing={2} fullWidth>
+                            <Grid item xs={2}>
+                                <Typography sx={{ fontSize: 19 }}>Selected Years: </Typography>
+                            </Grid>
+                            {formData.selectedYears.map((data) => (
+                                <Grid item xs={2}>
+                                    <TextField size="small" defaultValue={data} disabled fullWidth />
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Grid>
+
+
+                    {Object.entries(formData.subjectsPerYear).map(([year, subjects]) => (
+                        <>
+                            <Grid item xs={2}>
+                                <Typography key={year} sx={{ fontSize: 19 }}>
+                                    Subjects for {year}:
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    size="small"
+                                    defaultValue={subjects}
+                                    disabled
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                {" "}
+                            </Grid>
+                        </>
+                    ))}
+                    {Object.entries(formData.noOfBlocksPerYear).map(([year, subjects]) => (
+                        <>
+                            <Grid item xs={2}>
+                                <Typography key={year} sx={{ fontSize: 19 }}>
+                                    No of Blocks for {year}:
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    size="small"
+                                    defaultValue={subjects}
+                                    disabled
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                {" "}
+                            </Grid>
+                        </>
+                    ))}
+                    <Grid item xs={2}>
+                        <Typography sx={{ fontSize: 19 }}>Slots Per Day: </Typography>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <TextField
+                            size="small"
+                            defaultValue={formData.paperSlotsPerDay}
+                            disabled
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        {" "}
+                    </Grid>
+
+                    {formData.paperTimeSlots.map((timeSlot, index) => (
+                        <>
+                            <Grid item xs={2}>
+                                <Typography key={index} sx={{ fontSize: 19 }}>
+                                    Time Slot {index + 1} :
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <TextField
+                                    size="small"
+                                    defaultValue={timeSlot.startTime}
+                                    disabled
+                                    fullWidth
+                                />
+                            </Grid>
+                            -
+                            <Grid item xs={2}>
+                                <TextField
+                                    size="small"
+                                    defaultValue={timeSlot.endTime}
+                                    disabled
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item xs={5}>
+
+                            </Grid>
+                        </>
+                    ))}
+                </Grid>
+            </Paper>
+            {teacherNames&&yearSchedule &&
+                yearSchedule.map((year, yearIndex) => (
                     <>
-                        <Typography> {formData.selectedYears[index]} </Typography>
+                        <Typography variant="h5" sx={{ textAlign: "center" }}>
+                            Year : {formData.selectedYears[yearIndex]}{" "}
+                        </Typography>
                         <TableContainer component={Paper} sx={{ m: 2 }}>
-                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <Table sx={{ minWidth: 650 }} aria-label="simple table"  id="schedule-table">
                                 <TableHead>
                                     <TableRow>
                                         <TableCell align="center"></TableCell>
-                                        {[...Array(Math.ceil(year.totalSlots / formData.paperSlotsPerDay)).keys()].map((index) => (
+                                        {year.headers.days.map((index, i) => (
                                             <TableCell
                                                 key={index}
                                                 align="center"
-                                                colSpan={formData.paperSlotsPerDay}
+                                                colSpan={ Math.ceil(Math.ceil(formData.noOfBlocksPerYear[formData.selectedYears[yearIndex]])*formData.paperSlotsPerDay) }
                                                 width={50}
+                                                sx={{ minWidth: "100px !important", width: "300px !important", }}
                                             >
                                                 <TextField
                                                     fullWidth
                                                     variant="outlined"
                                                     size="small"
-                                                    defaultValue={"Day " + (index + 1)}
+                                                    defaultValue={index}
+                                                    value={index}
+                                                    onChange={(e) => { handleInputChange(e, yearIndex, "days", i) }}
                                                 />
                                             </TableCell>
                                         ))}
                                     </TableRow>
-
                                     <TableRow>
                                         <TableCell width={150}></TableCell>
-                                        {[...Array(Math.ceil(year.totalSlots)).keys()].map((index) => (
-                                            <TableCell key={index} width={70}>
+
+                                        {year.headers.subjects.map((index, i) => (
+                                            <TableCell key={index} width={70} sx={{ minWidth: "100px !important", width: "300px !important", }} colSpan={Math.ceil(formData.noOfBlocksPerYear[formData.selectedYears[yearIndex]])}>
                                                 <TextField
                                                     fullWidth
                                                     variant="outlined"
                                                     size="small"
-                                                    defaultValue={
-                                                        "Block " +
-                                                        ((index % formData.paperSlotsPerDay) + 1)
-                                                    }
+                                                    value={index}
+                                                    onChange={(e) => { handleInputChange(e, yearIndex, "subjects", i) }}
                                                 />
                                             </TableCell>
                                         ))}
-                                    </TableRow>
 
+
+                                    </TableRow>
                                     <TableRow>
                                         <TableCell width={150}></TableCell>
-                                        {[...Array(year.totalSlots).keys()].map((index) => (
-                                            <TableCell key={index} width={70}>
-                                                <TextField
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    size="small"
-                                                    defaultValue={"Subject " + (index + 1)}
-                                                />
-                                            </TableCell>
-                                        ))}
+                                        {year.headers.blocks.map(
+                                            (index, i) => (
+                                                <TableCell key={i} sx={{ minWidth: "112px !important", width: "150px !important", }} >
+                                                    <TextField
+                                                        fullWidth
+                                                        variant="outlined"
+                                                        size="small"
+                                                        value={index}
+                                                        onChange={(e) => { handleInputChange(e, yearIndex, "blocks", i) }}
+                                                    />
+                                                </TableCell>
+                                            )
+                                        )}
                                     </TableRow>
+
+
                                 </TableHead>
                                 <TableBody>
                                     {Object.keys(year.schedule).map((teacherIndex) => (
                                         <TableRow
                                             key={teacherIndex}
-                                            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                                        >
 
-                                            <TableCell component="th" scope="row" width={150}>
+                                        >
+                                            <TableCell sx={{ minWidth: "300px !important", width: "300px !important", }} >
                                                 <TextField
                                                     fullWidth
                                                     variant="outlined"
                                                     size="small"
                                                     disabled
-                                                    defaultValue={teacherNames[teacherIndex] != null ? teacherNames[teacherIndex].name : ''}
+                                                    defaultValue={teacherNames.find(teacher => teacher.teacherId == teacherIndex).name
+                                                        
+                                                    }
+                                                    sx={{   
+                                                        "& .MuiOutlinedInput-input": {
+                                                            fontSize: "14px !important"
+                                                        }
+                                                    }}
                                                 />
                                             </TableCell>
                                             {year.schedule[teacherIndex].map((isAvailable, index) => (
@@ -163,7 +295,13 @@ export default function ScheduleReviewSection({
                                                     <Checkbox
                                                         checked={isAvailable}
                                                         onChange={(e) =>
-                                                            handleInputChange(e, teacherIndex, index)
+                                                            handleInputChange1(
+                                                                e,
+                                                                year,
+                                                                yearIndex,
+                                                                teacherIndex,
+                                                                index
+                                                            )
                                                         }
                                                     />
                                                 </TableCell>
@@ -190,6 +328,7 @@ export default function ScheduleReviewSection({
                 >
                     Close
                 </Button>
+               
 
                 {activeStep !== steps && (
                     <Button
