@@ -10,6 +10,7 @@ import { sendBasicInfo } from "../api/schedule.api";
 import { fetchAllTeachers } from "../api/teacher.api";
 import html2pdf from "html2pdf.js";
 import YearSchedule from "../components/YearSchedule";
+import { generatePdfFile } from "../api/pdf.module";
 
 export default function ScheduleReviewSection({
     activeStep,
@@ -79,57 +80,10 @@ export default function ScheduleReviewSection({
         console.log("data");
 
         let data = {...formData, yearSchedule: [...yearSchedule]};
-        generatePdf(data)
+        generatePdfFile(data,teacherNames)
         console.log(data);
     }
-    function generatePdf(scheduleData) {
-
-        const element = document.createElement("div");
-        element.className = "container"
-        scheduleData.yearSchedule.forEach(function (yearScheduleData, yearIndex) {
-            const head  = document.createElement('div')
-            head.innerHTML =`<h1> ${scheduleData.selectedYears[yearIndex]}</h1>`
-            element.appendChild(head);
-
-            const table = document.createElement("table");
-            const tableHeader = document.createElement("thead");
-            const tableBody = document.createElement("tbody");
-            let dayRow = `<tr> <td rowspan=3 style="
-            text-align: center;
-        ">Teache Names</td>${yearScheduleData.headers.days.reduce((accumulator, currentValue) => accumulator + `<td  colspan=${Math.ceil(Math.ceil(scheduleData.noOfBlocksPerYear[scheduleData.selectedYears[yearIndex]]) * scheduleData.paperSlotsPerDay)}> ${currentValue} </td>`, "")}</tr>`
-            let subjectRow = `<tr> ${yearScheduleData.headers.subjects.reduce((accumulator, currentValue) => accumulator + `<td  colspan=${Math.ceil(scheduleData.noOfBlocksPerYear[scheduleData.selectedYears[yearIndex]])}> ${currentValue} </td>`, "")}</tr>`
-            let blocksRow = `<tr> ${yearScheduleData.headers.blocks.reduce((accumulator, currentValue) => accumulator + `<td  > ${currentValue} </td>`, "")}</tr>`
-
-            let bodyRow = "";
-            Object.keys(yearScheduleData.schedule).forEach(function (index) {
-                bodyRow += `<tr><td>${teacherNames.find((teacher) => teacher.teacherId == index).name}</td>`
-                bodyRow += yearScheduleData.schedule[index].reduce((accumulator, currentValue) => {
-                    if (currentValue) {
-                        return accumulator + "<td> 1 </td>";
-
-                    }
-                    else {
-                        return accumulator + "<td>  </td>";
-                    }
-                }, "")
-                bodyRow += `</tr>`
-            })
-            console.log(scheduleData.selectedYears[yearIndex])
-            tableHeader.innerHTML = `${dayRow}${subjectRow}${blocksRow}`;
-            tableBody.innerHTML = bodyRow;
-            table.appendChild(tableHeader);
-            table.appendChild(tableBody);
-            table.classList.add("table");
-
-            element.appendChild(table);
-            if (yearIndex < (scheduleData.yearSchedule.length-1)) {
-                let d = document.createElement("div")
-                d.className = "page-break"
-                element.appendChild(d);
-            }
-        })
-        html2pdf(element);
-    }
+   
  
     return (
         <div>
