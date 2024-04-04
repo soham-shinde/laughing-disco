@@ -11,3 +11,13 @@ export async function sendBasicInfo(data) {
     console.error("Error:", error);
   }
 }
+
+export async function saveSchedule(data){
+  try {
+    console.log(data);
+    const response = await axios.post(`${url}/supervision/save`,data);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
