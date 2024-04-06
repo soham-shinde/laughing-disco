@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import SchoolIcon from '@mui/icons-material/School';
-import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded';
+
 
 export default function Sidebar({Drawer,DrawerHeader,open,handleDrawerClose,theme}) {
   const navigate = useNavigate();
@@ -124,30 +124,7 @@ export default function Sidebar({Drawer,DrawerHeader,open,handleDrawerClose,them
                             <ListItemText primary="Student" sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            sx={{
-                                minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5,
-                            }}
-                            onClick={() => {
-                                console.log(`Exam `);
-                                navigate("/exam");
-                            }}
-                        >
-                            <ListItemIcon
-                                sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <ContentPasteRoundedIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Exam" sx={{ opacity: open ? 1 : 0 }} />
-                        </ListItemButton>
-                    </ListItem>
+                    
       
         </List>
         
