@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Table from '@mui/material/Table';
+import { Table, Paper, Box } from '@mui/material';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
@@ -13,18 +13,26 @@ import Stack from '@mui/material/Stack';
 
 import { getTeacherList } from '../api/data-service';
 
-const TeacherList = () => {
-  const [teachers, setTeachers] = useState([]);
+
+export default function ScheduleTeacherList({ activeStep,
+  handleNext,
+  handleBack,
+  handleClose,
+  steps,
+  teachers,
+  setTeachers,
+}) {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    const data = getTeacherList();
+    if(teachers.length===0){const data = getTeacherList();
     const teachersWithSelection = data.map((teacher) => ({
       ...teacher,
       selected: false,
     }));
-    setTeachers(teachersWithSelection);
-  }, []);
+    
+    setTeachers(teachersWithSelection);}
+  }, [setTeachers, teachers.length]);
 
   const handleToggle = (sno) => {
     setTeachers((prevTeachers) =>
@@ -76,33 +84,69 @@ const TeacherList = () => {
         </div>
 
       </Stack>
-      <div style={{ height: "300px", overflowY: "scroll" }}>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Teacher Name</TableCell>
-                <TableCell>Selected</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredTeachers.map((teacher) => (
-                <TableRow key={teacher.sno}>
-                  <TableCell>{teacher.name}</TableCell>
+      <div >
+        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+          <TableContainer sx={{ maxHeight: 330 }}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+
                   <TableCell>
-                    <Switch
-                      onChange={() => handleToggle(teacher.sno)}
-                      checked={teacher.selected}
-                    />
+                    Teacher Name
+                  </TableCell>
+                  <TableCell>
+                    Subjects
+                  </TableCell>
+                  <TableCell>
+                    Select
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {filteredTeachers.map((teacher) => (
+                  <TableRow key={teacher.sno}>
+                    <TableCell>{teacher.name}</TableCell>
+                    <TableCell>
+                      {teacher.teachTo.map((teach) => teach + " ")}
+                    </TableCell>
+                    <TableCell>
+                      <Switch
+                        onChange={() => handleToggle(teacher.sno)}
+                        checked={teacher.selected}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          {activeStep !== 0 && (
+            <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
+              Back
+            </Button>
+          )}
+          <Button
+            onClick={() => {
+              handleClose();
+            }}
+            sx={{ mt: 3, ml: 1 }}
+          >
+            Close
+          </Button>
+
+          {activeStep !== steps && (
+            <Button
+              variant="contained"
+              onClick={handleNext}
+              sx={{ mt: 3, ml: 1 }}
+            >
+              {activeStep === steps - 1 ? "Submit" : "Next"}
+            </Button>
+          )}
+        </Box>
       </div>
     </>
   );
-};
-
-export default TeacherList;
+}

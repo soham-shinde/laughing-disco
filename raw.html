@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+        
+
+      
+       
+    </style>
+</head>
+
+<body>
+    <!-- <table>
+      <thead>
+        <tr>
+          <td></td>
+          <td colspan="4">Day 1</td>
+          <td colspan="4">Day 2</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td colspan="2">Subject 1</td>
+          <td colspan="2">Subject 2</td>
+          <td colspan="2">Subject 3</td>
+          <td colspan="2">Subject 4</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>Block 1</td>
+          <td>Block 2</td>
+          <td>Block 1</td>
+          <td>Block 2</td>
+          <td>Block 1</td>
+          <td>Block 2</td>
+          <td>Block 1</td>
+          <td>Block 2</td>
+        </tr>
+      </thead>
+      <tbody>
+        
+      </tbody>
+    </table> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script>
+        const scheduleData = {
+            "title": "2",
+            "selectedYears": [
+                "SE",
+                "TE"
+            ],
+            "subjectsPerYear": {
+                "SE": "1",
+                "TE": "2"
+            },
+            "paperSlotsPerDay": "1",
+            "paperTimeSlots": [
+                ""
+            ],
+            "noOfBlocksPerYear": {
+                "SE": "2",
+                "TE": "2"
+            },
+            "yearSchedule": [
+                {
+                    "totalSlots": 2,
+                    "schedule": {
+                        "1": [
+                            true,
+                            false
+                        ],
+                        "3": [
+                            false,
+                            false
+                        ],
+                        "4": [
+                            false,
+                            false
+                        ],
+                        "9": [
+                            false,
+                            true
+                        ],
+                        "13": [
+                            false,
+                            false
+                        ],
+                        "14": [
+                            false,
+                            false
+                        ],
+                        "15": [
+                            false,
+                            false
+                        ],
+                        "16": [
+                            false,
+                            false
+                        ],
+                        "20": [
+                            false,
+                            false
+                        ],
+                        "22": [
+                            false,
+                            false
+                        ],
+                        "23": [
+                            false,
+                            false
+                        ],
+                        "24": [
+                            false,
+                            false
+                        ],
+                        "25": [
+                            false,
+                            false
+                        ],
+                        "26": [
+                            false,
+                            false
+                        ],
+                        "28": [
+                            false,
+                            false
+                        ],
+                        "29": [
+                            false,
+                            false
+                        ],
+                        "30": [
+                            false,
+                            false
+                        ],
+                        "31": [
+                            false,
+                            false
+                        ],
+                        "32": [
+                            false,
+                            false
+                        ]
+                    },
+                    "headers": {
+                        "days": [
+                            "Day 1"
+                        ],
+                        "subjects": [
+                            "Subject 1"
+                        ],
+                        "blocks": [
+                            "Block 1",
+                            "Block 1"
+                        ]
+                    }
+                },
+                {
+                    "totalSlots": 4,
+                    "schedule": {
+                        "2": [
+                            false,
+                            false,
+                            false,
+                            false
+                        ],
+                        "5": [
+                            false,
+                            false,
+                            false,
+                            false
+                        ],
+                        "6": [
+                            true,
+                            false,
+                            false,
+                            false
+                        ],
+                        "7": [
+                            false,
+                            true,
+                            false,
+                            false
+                        ],
+                        "8": [
+                            false,
+                            false,
+                            true,
+                            false
+                        ],
+                        "10": [
+                            false,
+                            false,
+                            false,
+                            true
+                        ],
+                        "11": [
+                            false,
+                            false,
+                            false,
+                            false
+                        ],
+                        "12": [
+                            false,
+                            false,
+                            false,
+                            false
+                        ],
+                        "13": [
+                            false,
+                            false,
+                            false,
+                            false
+                        ],
+                        "20": [
+                            false,
+                            false,
+                            false,
+                            false
+                        ],
+                        "23": [
+                            false,
+                            false,
+                            false,
+                            false
+                        ],
+                        "24": [
+                            false,
+                            false,
+                            false,
+                            false
+                        ],
+                        "27": [
+                            false,
+                            false,
+                            false,
+                            false
+                        ],
+                        "30": [
+                            false,
+                            false,
+                            false,
+                            false
+                        ],
+                        "32": [
+                            false,
+                            false,
+                            false,
+                            false
+                        ],
+                        "33": [
+                            false,
+                            false,
+                            false,
+                            false
+                        ]
+                    },
+                    "headers": {
+                        "days": [
+                            "Day 1",
+                            "Day 2"
+                        ],
+                        "subjects": [
+                            "Subject 1",
+                            "Subject 2"
+                        ],
+                        "blocks": [
+                            "Block 1",
+                            "Block 1",
+                            "Block 1",
+                            "Block 1"
+                        ]
+                    }
+                }
+            ]
+        }
+
+        const teacherData = [
+            {
+                _id: "65e7160e05467e68230461f7",
+                teacherId: 1,
+                name: "EMMANUEL MARK",
+                designation: "PROFESSOR",
+                teachTo: [["SE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e68230461f8",
+                teacherId: 2,
+                name: "ANANT MADHUKAR BAGADE",
+                designation: "ASSO.PROFESSOR",
+                teachTo: [["TE"], ["BE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e68230461f9",
+                teacherId: 3,
+                name: "ARCHANA SANTOSH GHOTKAR",
+                designation: "ASSO.PROFESSOR",
+                teachTo: [["SE"], ["BE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e68230461fa",
+                teacherId: 4,
+                name: "SHWETA C DHARMADHIKARI",
+                designation: "ASSO.PROFESSOR",
+                teachTo: [["SE"], ["BE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e68230461fb",
+                teacherId: 5,
+                name: "SHYAM BABASAHEB DESHMUKH",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["TE"], ["BE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e68230461fc",
+                teacherId: 6,
+                name: "SACHIN SURESH PANDE",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["TE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e68230461fd",
+                teacherId: 7,
+                name: "MANISH RAMBHAU KHODASKAR",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["TE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e68230461fe",
+                teacherId: 8,
+                name: "TUSHAR ANANT RANE",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["TE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e68230461ff",
+                teacherId: 9,
+                name: "KIRTI YOGESH DIGHOLKAR",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["SE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046200",
+                teacherId: 10,
+                name: "VISHAL RAMESH JAISWAL",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["TE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046201",
+                teacherId: 11,
+                name: "RACHNA AMISH KARNAVAT",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["TE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046202",
+                teacherId: 12,
+                name: "RAVINDRA BABURAO MURUMKAR",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["TE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046203",
+                teacherId: 13,
+                name: "NAMAN VIJAY BURADKAR",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["TE"], ["SE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046204",
+                teacherId: 14,
+                name: "SACHIN DASHARATH SHELKE",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["SE"], ["BE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046205",
+                teacherId: 15,
+                name: "SANDEEP RAMBHAU WARHADE",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["SE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046206",
+                teacherId: 16,
+                name: "JAYASHREE BALASO JAGDALE",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["SE"], ["BE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046207",
+                teacherId: 19,
+                name: "SUMITRA AMIT JAKHETE",
+                designation: "ASSTr.PROFESSOR",
+                teachTo: [["BE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046208",
+                teacherId: 20,
+                name: "ABHINAY GULABRAO DHAMANKAR",
+                designation: "ASSIT.PROFESSOR",
+                teachTo: [["TE"], ["SE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046209",
+                teacherId: 21,
+                name: "JAGDISH KASHINATH KAMBLE",
+                designation: "ASSIT.PROFESSOR",
+                teachTo: [["BE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e682304620a",
+                teacherId: 22,
+                name: "HRUSHIKESH JAIWANT JOSHI",
+                designation: "ASSIT.PROFESSOR",
+                teachTo: [["SE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e682304620b",
+                teacherId: 23,
+                name: "ABHIJEET CHANDRAKANT KARVE",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["SE"], ["BE"], ["TE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e682304620c",
+                teacherId: 24,
+                name: "VINIT RAJEEV TRIBHUVAN",
+                designation: "ASSIT.PROFESSOR",
+                teachTo: [["TE"], ["SE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e682304620d",
+                teacherId: 25,
+                name: "PRAJAKTA SUBHASH SHINDE",
+                designation: "ASSTT.PROFESSOR",
+                teachTo: [["SE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e682304620e",
+                teacherId: 26,
+                name: "JYOTI HINDURAO JADHAV",
+                designation: "ASSIT.PROFESSOR",
+                teachTo: [["SE"], ["BE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e682304620f",
+                teacherId: 27,
+                name: "AMIT ASHOKRAO KADAM",
+                designation: "ASSIT.PROFESSOR",
+                teachTo: [["TE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046210",
+                teacherId: 28,
+                name: "SWAPNAJA RAJESH. HIRAY",
+                designation: "ASSIT.PROFESSOR",
+                teachTo: [["SE"], ["BE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046211",
+                teacherId: 29,
+                name: "ARCHANA SATISH KADAM",
+                designation: "ASSIT.PROFESSOR",
+                teachTo: [["SE"], ["BE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046212",
+                teacherId: 30,
+                name: "GANESH SHIVAJI PISE",
+                designation: "ASSIT.PROFESSOR",
+                teachTo: [["SE"], ["TE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046213",
+                teacherId: 31,
+                name: "SHREYAS SHRIMANT SHINDE",
+                designation: "ASSIT.PROFESSOR",
+                teachTo: [["SE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046214",
+                teacherId: 32,
+                name: "AMRUTA ABHINANDAN PATIL",
+                designation: "ASSIT.PROFESSOR",
+                teachTo: [["SE"], ["TE"]],
+                __v: 0,
+            },
+            {
+                _id: "65e7160e05467e6823046215",
+                teacherId: 33,
+                name: "RADHIKA SUNIL MALPANI",
+                designation: "ASSIT.PROFESSOR",
+                teachTo: [["TE"], ["BE"]],
+                __v: 0,
+            },
+            {
+                _id: "660b3ea0379a74c99f821c2c",
+                name: "AMRUTA ABHINANDAN PATIL",
+                designation: "ASSIT.PROFESSOR",
+                teachTo: [["BE"]],
+                __v: 0,
+                teacherId: 34,
+            },
+        ];
+
+
+        
+    </script>
+</body>
+
+</html>

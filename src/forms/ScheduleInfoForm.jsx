@@ -1,29 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   TextField,
-  Button,
   Grid,
   Typography,
-  MenuItem,
-  InputLabel,
-  ListSubheader,
   FormControlLabel,
   Checkbox,
-  FormControl,
   FormLabel,
-  FormHelperText,
+  Button,
+  Box,
 } from "@mui/material";
 
-export default function ScheduleInfoForm() {
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-  const [formData, setFormData] = useState({
-    title: "",
-    selectedYears: [],
-    subjectsPerYear: {},
-    paperSlotsPerDay: '',
-    paperTimeSlots: []
-  });
-
+export default function ScheduleInfoForm({
+  activeStep,
+  handleNext,
+  handleBack,
+  handleClose,
+  formData,
+  setFormData,
+  steps,
+}) {
   const handleYearSelect = (event) => {
     const { value, checked } = event.target;
     let selectedYears = [...formData.selectedYears];
@@ -41,8 +39,6 @@ export default function ScheduleInfoForm() {
         subjectsPerYear[year] = "";
       }
     });
-
-    // Remove subjects for years not selected
     for (const year in subjectsPerYear) {
       if (!selectedYears.includes(year)) {
         delete subjectsPerYear[year];
@@ -54,50 +50,71 @@ export default function ScheduleInfoForm() {
 
   const handleSubjectsChange = (event, year) => {
     const { value } = event.target;
-    setFormData({
-      ...formData,
-      subjectsPerYear: {
-        ...formData.subjectsPerYear,
-        [year]: value,
-      },
-    });
-  };
-  const handlePaperSlotsChange = (event) => {
-    const { value } = event.target;
-    const paperTimeSlots = Array.from({ length: parseInt(value, 10) }, () => '');
-    setFormData({ ...formData, paperSlotsPerDay: value, paperTimeSlots });
+    if (!isNaN(value)) {
+      setFormData({
+        ...formData,
+        subjectsPerYear: {
+          ...formData.subjectsPerYear,
+          [year]: value,
+        },
+      });
+    }
   };
 
-  const handlePaperTimeSlotChange = (event, index) => {
+  const handleBlockChange = (event, year) => {
     const { value } = event.target;
-    const paperTimeSlots = [...formData.paperTimeSlots];
-    paperTimeSlots[index] = value;
-    setFormData({ ...formData, paperTimeSlots });
+    if (!isNaN(value)) {
+      setFormData({
+        ...formData,
+        noOfBlocksPerYear: {
+          ...formData.noOfBlocksPerYear,
+          [year]: value,
+        },
+      });
+    }
   };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Handle form submission
-    console.log(formData);
+
+  const handlePaperSlotsChange = (event) => {
+    const { value } = event.target;
+    const paperTimeSlots = Array.from(
+      { length: parseInt(value, 10) },
+      () => ""
+    );
+    if (!isNaN(value) && value < 4) {
+      setFormData({ ...formData, paperSlotsPerDay: value, paperTimeSlots });
+    }
   };
+
+  const handleTimeSlotChange = (event, index) => {
+    const { name, value } = event.target;
+    const updatedTimeSlots = [...formData.paperTimeSlots];
+    updatedTimeSlots[index] = { ...updatedTimeSlots[index], [name]: value };
+    setFormData({ ...formData, paperTimeSlots: updatedTimeSlots });
+  };
+
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
+      <form>
+        <Grid container spacing={1}>
           <Grid item xs={12}>
             <Typography variant="h6">Form</Typography>
           </Grid>
-          <Grid item xs={6}>
-            <FormLabel required>Title</FormLabel>
-            <TextField
-              fullWidth
-              variant="standard"
-              name="title"
-              
-              value={formData.title}
-              onChange={(e) =>
-                setFormData({ ...formData, title: e.target.value })
-              }
-            />
+          <Grid item xs={12}>
+            <Grid container>
+              <Grid item xs={6}>
+                <FormLabel required>Title</FormLabel>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  name="title"
+                  value={formData.title}
+                  onChange={(e) =>
+                    setFormData({ ...formData, title: e.target.value })
+                  }
+                />
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={6}>
             <FormLabel required>Year</FormLabel>
@@ -118,76 +135,116 @@ export default function ScheduleInfoForm() {
           </Grid>
         </Grid>
 
-        <Grid container spacing={2} sx={{ my: 1 }}>
+        <Grid container spacing={1} sx={{ my: 1 }}>
           {formData.selectedYears.map((year) => (
             <Grid item xs={3} key={year}>
               <FormLabel required>{`Subjects for ${year}`}</FormLabel>
               <TextField
                 fullWidth
-                type="number"
-                variant="standard"
-                InputProps={{
-                  inputProps: { min: 0 }
-                }}
+                type="text"
+                variant="outlined"
+                size="small"
                 name={`subjects_${year}`}
-                value={formData.subjectsPerYear[year] || 0}
+                value={formData.subjectsPerYear[year]}
                 onChange={(e) => handleSubjectsChange(e, year)}
               />
             </Grid>
           ))}
         </Grid>
-        <Grid container spacing={2} sx={{ my: 1 }}>
 
+        <Grid container spacing={1} sx={{ my: 1 }}>
+          {formData.selectedYears.map((year) => (
+            <Grid item xs={3} key={year}>
+              <FormLabel required>{`Blocks for ${year}`}</FormLabel>
+              <TextField
+                fullWidth
+                type="text"
+                variant="outlined"
+                size="small"
+                value={formData.noOfBlocksPerYear[year]}
+                onChange={(e) => handleBlockChange(e, year)}
+              />
+            </Grid>
+          ))}
+        </Grid>
+        <Grid container spacing={1}>
           <Grid item xs={3}>
-
             <FormLabel required>Paper Slots Per Day</FormLabel>
             <TextField
               fullWidth
-              type="number"
+              type="text"
               name="paperSlotsPerDay"
-              InputProps={{
-                inputProps: { min: 0 }
-              }}
-              variant="standard"
+              variant="outlined"
+              size="small"
               value={formData.paperSlotsPerDay}
               onChange={handlePaperSlotsChange}
             />
           </Grid>
         </Grid>
 
-        <Grid container spacing={2} sx={{ my: 1 }}>
-
+        <Grid container spacing={1} sx={{ my: 1 }}>
           {formData.paperTimeSlots.map((timeSlot, index) => (
-            <Grid item container xs={6}   key={index} spacing={1}>
-              <Grid item xs={10} textAlign={"start"} >
+            <Grid item container xs={6} key={index} spacing={1}>
+              <Grid item xs={10} textAlign={"start"}>
                 <Typography required>Time Slot {index + 1}</Typography>
               </Grid>
 
               <Grid item xs={5}>
-                <FormLabel required>Start</FormLabel>
-                <TextField
-                  fullWidth
-                  type="time"
-                  variant="standard"
-                  name={`paperTimeSlot${index + 1}`}
-                />
-              </Grid> 
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <FormLabel required>Start</FormLabel>
+                  <TextField
+                    fullWidth
+                    type="time"
+                    variant="outlined"
+                    size="small"
+                    name={`startTime`}
+                    value={formData.paperTimeSlots[index].startTime}
+                    onChange={(e) => handleTimeSlotChange(e, index)}
+                  />
+                </LocalizationProvider>
+              </Grid>
 
               <Grid item xs={5}>
                 <FormLabel required>To</FormLabel>
                 <TextField
                   fullWidth
                   type="time"
-                  variant="standard"
-                  name={`paperTimeSlot${index + 1}`}
+                  variant="outlined"
+                  size="small"
+                  name={`endTime`}
+                  value={formData.paperTimeSlots[index].endTime}
+                  onChange={(e) => handleTimeSlotChange(e, index)}
                 />
               </Grid>
             </Grid>
           ))}
         </Grid>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          {activeStep !== 0 && (
+            <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
+              Back
+            </Button>
+          )}
+          <Button
+            onClick={() => {
+              handleClose();
+            }}
+            sx={{ mt: 3, ml: 1 }}
+          >
+            Close
+          </Button>
 
-       
+          {activeStep !== steps && (
+            <Button
+              variant="contained"
+              onClick={handleNext}
+              sx={{ mt: 3, ml: 1 }}
+            >
+              {activeStep === steps - 1 ? "Submit" : "Next"}
+            </Button>
+          )}
+        </Box>
       </form>
-    </div >
+    </div>
   );
 }
