@@ -6,7 +6,7 @@ import {
     Button,
     Typography, Grid
 } from "@mui/material";
-import { sendBasicInfo } from "../api/schedule.api";
+import { saveSchedule, sendBasicInfo } from "../api/schedule.api";
 import { fetchAllTeachers } from "../api/teacher.api";
 import html2pdf from "html2pdf.js";
 import YearSchedule from "../components/YearSchedule";
@@ -76,12 +76,13 @@ export default function ScheduleReviewSection({
         console.log(yearSchedule);
 
     };
-    function handleSubmit(params) {
+   async  function handleSubmit(params) {
         console.log("data");
 
         let data = {...formData, yearSchedule: [...yearSchedule]};
-        generatePdfFile(data,teacherNames)
-        console.log(data);
+      //  generatePdfFile(data,teacherNames)
+       let res = await saveSchedule(data);
+        console.log('saved schedule',res);
     }
    
  
