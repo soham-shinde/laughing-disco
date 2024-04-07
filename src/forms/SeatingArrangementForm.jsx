@@ -7,19 +7,20 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Typography from "@mui/material/Typography";
-import SeatingArrangementInfo from "./SeatingArrangementInfoForm";
+import SeatingArrangementBasicDetailsForm from "./SeatingArrangementBasicDetailsForm";
+import SeatingArrangementAdditionalDetailsForm from "./SeatingArrangementAdditionalDetailsForm";
 import { useNavigate } from "react-router-dom";
-import SeatingArrangementTable from "../components/SeatingArrangementTable";
-const steps = ["Enter Basic Details","Edit Seating Arrangement","Review"];
+import SeatingArrangementTable from "../components/SeatingArrangementComponents/SeatingArrangementTable";
+const steps = ["Enter Basic Details","Additional Details","Review"];
 
 function getStepContent(step,formData,setFormData) {
   switch (step) {
     case 0:
-      return <SeatingArrangementInfo formData={formData} setFormData={setFormData}/>;
+      return <SeatingArrangementBasicDetailsForm formData={formData} setFormData={setFormData}/>;
     case 1:
-        return <SeatingArrangementTable  formData={formData} readOnly = {false}/>
+        return <SeatingArrangementAdditionalDetailsForm formData={formData} setFormData={setFormData}/>;
     case 2:
-      return <SeatingArrangementTable  formData={formData} readOnly = {true}/>
+      return <SeatingArrangementTable  formData={formData} setFormData={setFormData}/>
     default:
       throw new Error("Unknown step");
   }
@@ -37,8 +38,9 @@ export default function SeatingArrangementForm() {
     examTimeSlots: [],
     examdays: 0,
     examStartDate:"",
-    classroomCount:0,
-    classroomData:[],
+    examDates:[],
+
+    selectedClassrooms:[],
     
   });
 
@@ -56,13 +58,15 @@ export default function SeatingArrangementForm() {
     
   };
 
-  const handleCloseE = (event, reason) => {
-    if (reason && reason === "backdropClick")
-      return;
+  const handleClose = () => {
+    
     setActiveStep(0);
     navigate("/student");
   }
-
+  const handleSubmit = () => {
+    // Handle form submission logic here
+    console.log("Form submitted:", formData);
+  };
 
   return (
     <>
@@ -82,7 +86,7 @@ export default function SeatingArrangementForm() {
               <React.Fragment>
                 
                 
-                {activeStep !== steps.length  ? getStepContent(activeStep,formData,setFormData):handleCloseE()}
+                {activeStep !== steps.length  ? getStepContent(activeStep,formData,setFormData):handleClose()}
                 <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                
                   {activeStep !== 0 && (
@@ -90,13 +94,14 @@ export default function SeatingArrangementForm() {
                       Back
                     </Button>
                   )}
-                   <Button onClick={()=>{handleCloseE()}} sx={{ mt: 3, ml: 1 }}>
-                  Close
+                   <Button onClick={handleClose} sx={{ mt: 3, ml: 1 }}>
+                Close
+              </Button>
+              {activeStep !== steps.length && (
+                <Button variant="contained" onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext} sx={{ mt: 3, ml: 1 }}>
+                  {activeStep === steps.length - 1 ? "Submit" : "Next"}
                 </Button>
-                 
-                  { activeStep !== steps.length &&<Button variant="contained" onClick={handleNext} sx={{ mt: 3, ml: 1 }} >
-                    {activeStep === steps.length - 1 ? "Submit" : "Next"}
-                  </Button>}
+              )}
                 </Box>
               </React.Fragment>
           </Paper>
