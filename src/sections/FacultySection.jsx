@@ -16,6 +16,7 @@ import AddFacultyForm from "../forms/AddFacultyForm.jsx";
 import EditFacultyForm from "../forms/EditFacultyForm.jsx";
 import ConfirmMessageModal from "../components/ConfirmMessageModal.jsx";
 import FeedbackMessageModal from "../components/FeedbackMessageModal.jsx";
+import { updateExistingTeacher, fetchAllTeachers } from "../api/teacher.api.js";
 
 const style = {
   position: "absolute",
@@ -30,7 +31,7 @@ const style = {
 };
 
 const columns = [
-  { id: "sno", label: "Sr. No.", minWidth: 170 },
+  { id: "teacherId", label: "Sr. No.", minWidth: 170 },
   { id: "name", label: "Name", minWidth: 100 },
   {
     id: "designation",
@@ -44,7 +45,7 @@ const columns = [
     label: "Joining Date",
     minWidth: 170,
     align: "left",
-    format: (value) => (value ? value.toLocaleString("en-US") : ""),
+    format: (value) => (value ? new Date(value).toLocaleDateString('IND') : ""),
   },
   {
     id: "teachTo",
@@ -97,10 +98,14 @@ export default function FacultySection() {
   const [feedbackType, setFeedbackType] = useState("");
 
   useEffect(() => {
-    const teacherList = getTeacherList();
-    setTeachers(teacherList);
-    setRows(teacherList);
-  }, []);
+    let fu = async ()=>{
+      const teacherList = await fetchAllTeachers();
+      console.log(teacherList);
+      setTeachers(teacherList);
+      setRows(teacherList);
+    };
+    fu();
+    }, []);
 
   const handleAddOpen = () => setAddOpen(true);
   const handleAddClose = () => setAddOpen(false);
@@ -201,7 +206,7 @@ export default function FacultySection() {
             <EditFacultyForm
               onClose={handleEditClose}
               formid={formid}
-              onSuccess={() => {
+              onSuccess={async () => {
                 setFeedbackMainMessage("Edited!");
                 setFeedbackDetailMessage("Data has been edited successfully");
                 setFeedbackType("success");
