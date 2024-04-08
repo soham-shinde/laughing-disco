@@ -1,25 +1,20 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import StickyHeadTable from "../components/TableComponent.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import GetAppIcon from '@mui/icons-material/GetApp';
+import { Autocomplete, Box, TextField, Button, Stack, Typography } from "@mui/material";
 
-import { Autocomplete, Box, TextField, Button, Stack } from "@mui/material";
-
+import { getSeatingArrangementList } from "../api/seating-arrangement-data.js";
 
 import Modal from "@mui/material/Modal";
-import AddFacultyForm from "../forms/AddFacultyForm.jsx";
-import EditFacultyForm from "../forms/EditFacultyForm.jsx";
 import ConfirmMessageModal from "../components/ConfirmMessageModal.jsx";
 import FeedbackMessageModal from "../components/FeedbackMessageModal.jsx";
-<<<<<<< HEAD
-import { fetchAllTeachers, removeTeacherById } from "../api/teacher.api.js";
-=======
-import { updateExistingTeacher, fetchAllTeachers } from "../api/teacher.api.js";
->>>>>>> 91128e5919e676393fe75f95cb06207ce21b65a7
 
 const style = {
   position: "absolute",
@@ -34,35 +29,29 @@ const style = {
 };
 
 const columns = [
-  { id: "teacherId", label: "Sr. No.", minWidth: 170 },
-  { id: "name", label: "Name", minWidth: 100 },
+  { id: "sno", label: "Sr. No.", minWidth: 80 },
+  { id: "title", label: "Title", minWidth: 120 },
+  
   {
-    id: "designation",
-    label: "Designation",
-    minWidth: 170,
+    id: "department",
+    label: "Department",
+    minWidth: 120,
     align: "left",
     format: (value) => (value ? value.toLocaleString("en-US") : ""),
   },
   {
-    id: "joiningDate",
-    label: "Joining Date",
-    minWidth: 170,
-    align: "left",
-    format: (value) => (value ? new Date(value).toLocaleDateString('IND') : ""),
-  },
-  {
-    id: "teachTo",
-    label: "Teach To",
-    minWidth: 170,
+    id: "academicYear",
+    label: "Academic Year",
+    minWidth: 120,
     align: "left",
     format: (value) => (value ? value.toLocaleString("en-US") : ""),
   },
   {
     id: "actions",
     label: "Actions",
-    minWidth: 170,
+    minWidth: 120,
     align: "center",
-    format: (value, row, onDeleteClick, onEditClick) => (
+    format: (value, row, onDeleteClick, onEditClick, onExportClick) => (
       <div>
         <IconButton
           onClick={(e) => {
@@ -82,62 +71,50 @@ const columns = [
         >
           <EditIcon style={{ color: "#2DB532" }} />
         </IconButton>
+        <IconButton onClick={(e) => {
+          e.stopPropagation(); onExportClick(row)
+        }}>
+          <GetAppIcon />
+        </IconButton>
       </div>
     ),
   },
 ];
 
-export default function FacultySection() {
-  const [teachers, setTeachers] = useState([]);
-  const [rows, setRows] = useState([]);
+export default function StudentSection() {
 
-  const [addopen, setAddOpen] = useState(false);
-  const [editopen, setEditOpen] = useState(false);
+  const navigate = useNavigate();
+  const [seatingArrangementList, setSeatingArrangementList] = useState([]);
+  const [rows, setRows] = useState([]);
   const [deleteopen, setDeleteOpen] = useState(false);
-  const [formid, setFormId] = useState("");
+  
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackMainMessage, setFeedbackMainMessage] = useState("");
   const [feedbackDetailMessage, setFeedbackDetailMessage] = useState("");
   const [feedbackType, setFeedbackType] = useState("");
-<<<<<<< HEAD
-  async function fetchTeacher(params) {
-    const teacherList = await fetchAllTeachers();
-    console.log(teacherList);
-    setTeachers(teacherList);
-    setRows(teacherList);
-  }
+
   useEffect(() => {
-   
-    fetchTeacher();
+    const seatingArrangementList = getSeatingArrangementList();
+    setSeatingArrangementList(seatingArrangementList);
+    setRows(seatingArrangementList);
   }, []);
-=======
-
-  useEffect(() => {
-    let fu = async ()=>{
-      const teacherList = await fetchAllTeachers();
-      console.log(teacherList);
-      setTeachers(teacherList);
-      setRows(teacherList);
-    };
-    fu();
-    }, []);
-
->>>>>>> 91128e5919e676393fe75f95cb06207ce21b65a7
-  const handleAddOpen = () => setAddOpen(true);
-  const handleAddClose = () => setAddOpen(false);
-  const handleEditOpen = () => setEditOpen(true);
-  const handleEditClose = () => setEditOpen(false);
+ 
+  const handleAddOpen =()=>{
+    navigate('/student/add')
+  };
+  
+  const handleEditOpen = () => {
+    console.log("Edit click");
+  }
+  
   const handleDeleteClose = () => setDeleteOpen(false);
   const handleDeleteOpen = () => setDeleteOpen(true);
 
   const handleFeedbackClose = () => setFeedbackOpen(false);
 
   const handleDeleteClick = (row) => {
-    console.log(row._id);
-    removeTeacherById(row._id);
-    setFormId(row);
+   
     handleDeleteOpen();
-    fetchTeacher();
   };
 
   const handleDeleteConfirm = async (row) => {
@@ -161,87 +138,31 @@ export default function FacultySection() {
   };
 
   const handleEditClick = (row) => {
-    console.log(row);
-    setFormId(row);
+    
     handleEditOpen();
   };
 
   const handleSearchClick = (value) => {
 
     if (!value) {
-      setRows(teachers);
+      setRows(seatingArrangementList);
       return;
     }
     if (typeof value === "object") {
-      const filteredTeachers = teachers.filter((teacher) =>
-        teacher.name.toLowerCase().includes(value.name.toLowerCase())
+      const filteredSeatingArrangementList= seatingArrangementList.filter((seatingArrangementList) =>
+      seatingArrangementList.title.toLowerCase().includes(value.title.toLowerCase())
       );
-      console.log("Filtered teachers:", filteredTeachers);
-      setRows(filteredTeachers);
+      setRows(filteredSeatingArrangementList);
     }
   };
 
   return (
     <div>
+      <Typography component="h6" variant="h6" align="center">
+          Seating Arrangement
+      </Typography>
       <div>
-        <Modal
-          open={addopen}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <AddFacultyForm
-              onClose={handleAddClose}
-              teacherId = {rows?rows.reduce((max, obj) => {
-                return obj.teacherId > max.teacherId ? obj : max;
-              }, rows[0]):0}
-              onSuccess={() => {
-                setFeedbackMainMessage("Added!");
-                setFeedbackDetailMessage("Data has been added successfully");
-                setFeedbackType("success");
-                setFeedbackOpen(true);
-                fetchTeacher();
-              }}
-              onError={() => {
-                setFeedbackMainMessage("Error!");
-                setFeedbackDetailMessage("An error occurred during editing");
-                setFeedbackType("error");
-                setFeedbackOpen(true);
-              }}
-            />
-          </Box>
-        </Modal>
-
-        <Modal
-          open={editopen}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <EditFacultyForm
-              onClose={handleEditClose}
-              formid={formid}
-<<<<<<< HEAD
-              onSuccess={() => {
-                fetchTeacher();
-=======
-              onSuccess={async () => {
->>>>>>> 91128e5919e676393fe75f95cb06207ce21b65a7
-                setFeedbackMainMessage("Edited!");
-                setFeedbackDetailMessage("Data has been edited successfully");
-                setFeedbackType("success");
-                setFeedbackOpen(true);
-              }}
-              onError={() => {
-                setFeedbackMainMessage("Error!");
-                setFeedbackDetailMessage("An error occurred during editing");
-                setFeedbackType("error");
-                setFeedbackOpen(true);
-              }}
-            />
-          </Box>
-        </Modal>
-
+        
         <Modal
           open={deleteopen}
           aria-labelledby="modal-modal-title"
@@ -281,10 +202,10 @@ export default function FacultySection() {
           <Autocomplete
             disablePortal
             id="combo-box-demo"
-            options={teachers}
+            options={seatingArrangementList}
             sx={{ width: 300 }}
             onChange={(e, v) => handleSearchClick(v)}
-            getOptionLabel={(rows) => rows.name || ""}
+            getOptionLabel={(rows) => rows.title || ""}
             renderInput={(params) => (
               <TextField {...params} size="small" label="Search" />
             )}
@@ -294,20 +215,19 @@ export default function FacultySection() {
             endIcon={<AddCircleIcon />}
             onClick={handleAddOpen}
           >
-            Add
+            Create
           </Button>
         </Stack>
 
         <Box height={10} />
 
-        {rows && <StickyHeadTable
+        <StickyHeadTable
           columns={columns}
           rows={rows}
           handleDeleteClick={handleDeleteClick}
           handleEditClick={handleEditClick}
-        />}
+        />
       </div>
     </div>
   );
 }
-

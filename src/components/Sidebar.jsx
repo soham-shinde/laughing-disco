@@ -14,6 +14,7 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import SchoolIcon from '@mui/icons-material/School';
 
+
 export default function Sidebar({Drawer,DrawerHeader,open,handleDrawerClose,theme}) {
   const navigate = useNavigate();
 
@@ -108,6 +109,7 @@ export default function Sidebar({Drawer,DrawerHeader,open,handleDrawerClose,them
                             }}
                             onClick={() => {
                                 console.log(`Student `);
+                                navigate('/student');
                             }}
                         >
                             <ListItemIcon
@@ -122,6 +124,7 @@ export default function Sidebar({Drawer,DrawerHeader,open,handleDrawerClose,them
                             <ListItemText primary="Student" sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
+                    
       
         </List>
         
