@@ -9,13 +9,13 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import { Autocomplete, Box, TextField, Button, Stack } from "@mui/material";
 
-import { getTeacherList } from "../api/data-service.js";
 
 import Modal from "@mui/material/Modal";
 import AddFacultyForm from "../forms/AddFacultyForm.jsx";
 import EditFacultyForm from "../forms/EditFacultyForm.jsx";
 import ConfirmMessageModal from "../components/ConfirmMessageModal.jsx";
 import FeedbackMessageModal from "../components/FeedbackMessageModal.jsx";
+import { fetchAllTeachers, removeTeacherById } from "../api/teacher.api.js";
 
 const style = {
   position: "absolute",
@@ -30,7 +30,7 @@ const style = {
 };
 
 const columns = [
-  { id: "sno", label: "Sr. No.", minWidth: 170 },
+  { id: "teacherId", label: "Sr. No.", minWidth: 170 },
   { id: "name", label: "Name", minWidth: 100 },
   {
     id: "designation",
@@ -40,7 +40,7 @@ const columns = [
     format: (value) => (value ? value.toLocaleString("en-US") : ""),
   },
   {
-    id: "joinDate",
+    id: "joiningDate",
     label: "Joining Date",
     minWidth: 170,
     align: "left",
@@ -95,13 +95,16 @@ export default function FacultySection() {
   const [feedbackMainMessage, setFeedbackMainMessage] = useState("");
   const [feedbackDetailMessage, setFeedbackDetailMessage] = useState("");
   const [feedbackType, setFeedbackType] = useState("");
-
-  useEffect(() => {
-    const teacherList = getTeacherList();
+  async function fetchTeacher(params) {
+    const teacherList = await fetchAllTeachers();
+    console.log(teacherList);
     setTeachers(teacherList);
     setRows(teacherList);
+  }
+  useEffect(() => {
+   
+    fetchTeacher();
   }, []);
-
   const handleAddOpen = () => setAddOpen(true);
   const handleAddClose = () => setAddOpen(false);
   const handleEditOpen = () => setEditOpen(true);
@@ -112,8 +115,11 @@ export default function FacultySection() {
   const handleFeedbackClose = () => setFeedbackOpen(false);
 
   const handleDeleteClick = (row) => {
+    console.log(row._id);
+    removeTeacherById(row._id);
     setFormId(row);
     handleDeleteOpen();
+    fetchTeacher();
   };
 
   const handleDeleteConfirm = async (row) => {
@@ -138,20 +144,12 @@ export default function FacultySection() {
 
   const handleEditClick = (row) => {
     console.log(row);
-    const data = {
-      id: row.id,
-      name: row.name,
-      designation: row.designation,
-      joining_date: new Date(row.joinDate),
-      teachTo: row.teachTo,
-    };
-   
-    setFormId(data);
+    setFormId(row);
     handleEditOpen();
   };
 
   const handleSearchClick = (value) => {
-    
+
     if (!value) {
       setRows(teachers);
       return;
@@ -176,11 +174,15 @@ export default function FacultySection() {
           <Box sx={style}>
             <AddFacultyForm
               onClose={handleAddClose}
+              teacherId = {rows?rows.reduce((max, obj) => {
+                return obj.teacherId > max.teacherId ? obj : max;
+              }, rows[0]):0}
               onSuccess={() => {
                 setFeedbackMainMessage("Added!");
                 setFeedbackDetailMessage("Data has been added successfully");
                 setFeedbackType("success");
                 setFeedbackOpen(true);
+                fetchTeacher();
               }}
               onError={() => {
                 setFeedbackMainMessage("Error!");
@@ -202,6 +204,7 @@ export default function FacultySection() {
               onClose={handleEditClose}
               formid={formid}
               onSuccess={() => {
+                fetchTeacher();
                 setFeedbackMainMessage("Edited!");
                 setFeedbackDetailMessage("Data has been edited successfully");
                 setFeedbackType("success");
@@ -275,12 +278,12 @@ export default function FacultySection() {
 
         <Box height={10} />
 
-        <StickyHeadTable
+        {rows && <StickyHeadTable
           columns={columns}
           rows={rows}
           handleDeleteClick={handleDeleteClick}
           handleEditClick={handleEditClick}
-        />
+        />}
       </div>
     </div>
   );

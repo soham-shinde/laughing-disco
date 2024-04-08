@@ -6,11 +6,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import { updateExistingTeacher } from '../api/teacher.api';
 export default function EditFacultyForm({ onClose, formid, onSuccess, onError }) {
 
   const [name, setName] = useState("");
   const [designation, setDesignation] = useState("");
-  const [joining_date, setJoiningDate] = useState(null);
+  const [joiningDate, setJoiningDate] = useState(null);
   const [teachToSE, setTeachToSE] = useState(false);
   const [teachToTE, setTeachToTE] = useState(false);
   const [teachToBE, setTeachToBE] = useState(false);
@@ -19,14 +20,16 @@ export default function EditFacultyForm({ onClose, formid, onSuccess, onError })
   useEffect(() => {
     //To set initial data to the form
     if (formid) {
+      console.log(formid);
       console.log("Form ID:" + formid);
       setName(formid.name || "");
       setDesignation(formid.designation || "");
 
-      setJoiningDate(formid.joining_date ? dayjs(formid.joining_date) : null);
-      setTeachToSE(formid.teachTo.includes("SE"));
-      setTeachToTE(formid.teachTo.includes("TE"));
-      setTeachToBE(formid.teachTo.includes("BE"));
+      setJoiningDate(formid.joiningDate ? dayjs(formid.joiningDate) : null);
+      console.log(formid.teachTo);
+      setTeachToSE(formid.teachTo[0].includes("SE"));
+      setTeachToTE(formid.teachTo[0].includes("TE"));
+      setTeachToBE(formid.teachTo[0].includes("BE"));
     }
   }, [formid])
   const handleNameChange = (event) => {
@@ -52,10 +55,21 @@ export default function EditFacultyForm({ onClose, formid, onSuccess, onError })
     setTeachToBE(event.target.checked);
   }
 
-  const EditFaculty = () => {
+  const EditFaculty = async () => {
     try {
       // Perform your edit logic here...
-
+      let teachTo =[]
+      if(teachToSE){
+        teachTo.push("SE")
+      }
+      if(teachToTE){
+        teachTo.push("TE")
+      }
+      if(teachToBE){
+        teachTo.push("BE")
+      }
+console.log();
+      await updateExistingTeacher({...formid,name:name,designation:designation,joiningDate:joiningDate.format('MM-DD-YYYY'),teachTo:teachTo})
       // Show success modal if edit is successful
       onSuccess();
     } catch (error) {
@@ -110,8 +124,7 @@ export default function EditFacultyForm({ onClose, formid, onSuccess, onError })
               required
               variant="filled"
               fullWidth
-              value={dayjs(joining_date)}
-              format='DD/MM/YYYY'
+              value={joiningDate}
               onChange={handleJoiningDateChange}
               slotProps={{ textField: { fullWidth: true } }}
 

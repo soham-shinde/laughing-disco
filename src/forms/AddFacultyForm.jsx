@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, IconButton, Typography, TextField, Button, Checkbox, FormControlLabel, Box, Divider} from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { addNewTeacher } from '../api/teacher.api';
 
 
-export default function AddFacultyForm({ onClose ,onSuccess, onError}) {
+export default function AddFacultyForm({teacherId, onClose ,onSuccess, onError}) {
 
   const [name, setName] = useState("");
   const [designation, setDesignation] = useState("");
@@ -16,6 +17,7 @@ export default function AddFacultyForm({ onClose ,onSuccess, onError}) {
   const [teachToTE, setTeachToTE] = useState(false);
   const [teachToBE, setTeachToBE] = useState(false);
   
+
 
   const handleNameChange = (event) => {
     setName(event.target.value)
@@ -40,10 +42,21 @@ export default function AddFacultyForm({ onClose ,onSuccess, onError}) {
   }
 
   
-  const addFaculty = () => {
+  const addFaculty = async () => {
     try {
       // Perform your addition logic here...
-      
+      let teachTo =[]
+      if(teachToSE){
+        teachTo.push("SE")
+      }
+      if(teachToTE){
+        teachTo.push("TE")
+      }
+      if(teachToBE){
+        teachTo.push("BE")
+      }
+
+      await addNewTeacher({teacherId:teacherId.teacherId+1,name:name,designation:designation,joiningDate:joining_date.format('DD-MM-YYYY'),teachTo:teachTo})
       // Show success modal if addition is successful
       onSuccess();
     } catch (error) {
