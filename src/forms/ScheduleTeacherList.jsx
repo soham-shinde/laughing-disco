@@ -25,16 +25,20 @@ export default function ScheduleTeacherList({ activeStep,
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    if(teachers.length===0){const data = getTeacherList();
-    const teachersWithSelection = data.map((teacher) => ({
-      ...teacher,
-      selected: false,
-    }));
-    
-    setTeachers(teachersWithSelection);}
+    if (teachers.length === 0) {
+      const data = getTeacherList();
+      console.log(data);
+      const teachersWithSelection = data.map((teacher) => ({
+        ...teacher,
+        selected: false,
+      }));
+
+      setTeachers(teachersWithSelection);
+    }
   }, [setTeachers, teachers.length]);
 
   const handleToggle = (sno) => {
+    console.log(sno);
     setTeachers((prevTeachers) =>
       prevTeachers.map((teacher) =>
         teacher.sno === sno ? { ...teacher, selected: !teacher.selected } : teacher
